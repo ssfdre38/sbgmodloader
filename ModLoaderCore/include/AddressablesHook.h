@@ -45,12 +45,12 @@ private:
     static std::vector<OnSceneLoadCallback> s_SceneLoadCallbacks;
     
     // IL2CPP class/method pointers
-    static IL2CPP::Il2CppClass* s_AddressablesClass;
-    static IL2CPP::Il2CppClass* s_ResourceManagerClass;
-    static IL2CPP::Il2CppClass* s_AsyncOperationClass;
-    static IL2CPP::Il2CppMethodInfo* s_LoadContentCatalogAsync;
-    static IL2CPP::Il2CppMethodInfo* s_LoadAssetAsync;
-    static IL2CPP::Il2CppMethodInfo* s_LoadSceneAsync;
+    static Il2CppClass* s_AddressablesClass;
+    static Il2CppClass* s_ResourceManagerClass;
+    static Il2CppClass* s_AsyncOperationClass;
+    static Il2CppMethodInfo* s_LoadContentCatalogAsync;
+    static Il2CppMethodInfo* s_LoadAssetAsync;
+    static Il2CppMethodInfo* s_LoadSceneAsync;
     
     // Hook the addressables system
     static bool HookAddressablesAPI();

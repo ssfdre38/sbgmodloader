@@ -1,7 +1,8 @@
 #include "AddressablesHook.h"
 #include "IL2CPP.h"
 #include "Log.h"
-#include <detours.h>
+// TODO: Add Detours hooks later
+// #include <detours.h>
 
 namespace ModLoader {
 namespace Addressables {
@@ -13,12 +14,12 @@ std::vector<OnCatalogLoadCallback> AddressablesHook::s_CatalogLoadCallbacks;
 std::vector<OnAssetLoadCallback> AddressablesHook::s_AssetLoadCallbacks;
 std::vector<OnSceneLoadCallback> AddressablesHook::s_SceneLoadCallbacks;
 
-IL2CPP::Il2CppClass* AddressablesHook::s_AddressablesClass = nullptr;
-IL2CPP::Il2CppClass* AddressablesHook::s_ResourceManagerClass = nullptr;
-IL2CPP::Il2CppClass* AddressablesHook::s_AsyncOperationClass = nullptr;
-IL2CPP::Il2CppMethodInfo* AddressablesHook::s_LoadContentCatalogAsync = nullptr;
-IL2CPP::Il2CppMethodInfo* AddressablesHook::s_LoadAssetAsync = nullptr;
-IL2CPP::Il2CppMethodInfo* AddressablesHook::s_LoadSceneAsync = nullptr;
+Il2CppClass* AddressablesHook::s_AddressablesClass = nullptr;
+Il2CppClass* AddressablesHook::s_ResourceManagerClass = nullptr;
+Il2CppClass* AddressablesHook::s_AsyncOperationClass = nullptr;
+Il2CppMethodInfo* AddressablesHook::s_LoadContentCatalogAsync = nullptr;
+Il2CppMethodInfo* AddressablesHook::s_LoadAssetAsync = nullptr;
+Il2CppMethodInfo* AddressablesHook::s_LoadSceneAsync = nullptr;
 
 bool AddressablesHook::Initialize() {
     if (s_Initialized) {
