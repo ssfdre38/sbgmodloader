@@ -42,6 +42,10 @@ DWORD WINAPI InitializeModLoaderThread(LPVOID) {
             Log::Info("[CORE] Exploring game architecture...");
             GameExplorer::ExploreGame();
             
+            // Deep inspection of game mode system
+            Log::Info("[CORE] Inspecting game mode system...");
+            GameExplorer::InspectGameModeSystem();
+            
             // Export findings to file
             std::string exportPath = std::string(getenv("APPDATA")) + "\\sbg-mod-loader\\game-architecture.md";
             GameExplorer::ExportToFile(exportPath.c_str());

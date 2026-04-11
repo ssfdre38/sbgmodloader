@@ -40,6 +40,10 @@ public:
     // Get detailed info about a specific class
     static ClassInfo GetClassDetails(const char* assemblyName, const char* nameSpace, const char* className);
     
+    // Inspect a class deeply - get all fields, properties, methods
+    static void InspectClass(const char* assemblyName, const char* nameSpace, const char* className);
+    static void InspectGameModeSystem(); // Inspect all game mode related classes
+    
     // Export findings to file
     static void ExportToFile(const char* filename);
     

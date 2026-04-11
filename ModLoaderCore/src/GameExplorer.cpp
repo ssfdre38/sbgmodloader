@@ -355,4 +355,73 @@ void GameExplorer::ExportToFile(const char* filename) {
     Log::Info("✅ Exported architecture analysis to: %s", filename);
 }
 
+void GameExplorer::InspectClass(const char* assemblyName, const char* nameSpace, const char* className) {
+    Log::Info("");
+    Log::Info("🔬 Inspecting Class: %s.%s", nameSpace, className);
+    Log::Info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    
+    MonoClass* klass = MonoHelper::FindClass(assemblyName, nameSpace, className);
+    if (!klass) {
+        Log::Error("  ❌ Class not found!");
+        return;
+    }
+    
+    // Get all methods
+    auto methods = MonoHelper::GetMethods(klass);
+    Log::Info("  📋 Methods (%d):", methods.size());
+    for (size_t i = 0; i < methods.size() && i < 20; i++) {
+        std::string methodName = MonoHelper::GetMethodName(methods[i]);
+        Log::Info("    • %s", methodName.c_str());
+    }
+    if (methods.size() > 20) {
+        Log::Info("    ... and %d more", methods.size() - 20);
+    }
+    
+    // Get all fields
+    // TODO: Add GetFields and GetFieldName to MonoHelper
+    /*
+    auto fields = MonoHelper::GetFields(klass);
+    Log::Info("  📦 Fields (%d):", fields.size());
+    for (size_t i = 0; i < fields.size() && i < 20; i++) {
+        std::string fieldName = MonoHelper::GetFieldName(fields[i]);
+        Log::Info("    • %s", fieldName.c_str());
+    }
+    if (fields.size() > 20) {
+        Log::Info("    ... and %d more", fields.size() - 20);
+    }
+    */
+    
+    Log::Info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+}
+
+void GameExplorer::InspectGameModeSystem() {
+    Log::Info("");
+    Log::Info("═══════════════════════════════════════════════");
+    Log::Info("🎮 INSPECTING GAME MODE SYSTEM");
+    Log::Info("═══════════════════════════════════════════════");
+    
+    // Key classes to inspect
+    const char* classesToInspect[][3] = {
+        {"GameAssembly", "", "MatchSetupRules"},
+        {"GameAssembly", "", "MatchSettings"},
+        {"GameAssembly", "", "MatchState"},
+        {"GameAssembly", "", "Rule"},
+        {"GameAssembly", "", "RuleCategory"},
+        {"GameAssembly", "", "Preset"},
+        {"GameAssembly", "", "MatchSetupMenu"},
+        {"GameAssembly", "", "GolfHole"},
+        {"GameAssembly", "", "HoleData"},
+        {"GameAssembly", "", "PlayerMatchResolution"}
+    };
+    
+    for (int i = 0; i < 10; i++) {
+        InspectClass(classesToInspect[i][0], classesToInspect[i][1], classesToInspect[i][2]);
+    }
+    
+    Log::Info("");
+    Log::Info("═══════════════════════════════════════════════");
+    Log::Info("✅ GAME MODE SYSTEM INSPECTION COMPLETE");
+    Log::Info("═══════════════════════════════════════════════");
+}
+
 } // namespace ModLoader
