@@ -72,6 +72,7 @@
     <ClCompile Include="ModLoaderCore\src\Hooks.cpp" />
     <ClCompile Include="ModLoaderCore\src\Overlay.cpp" />
     <ClCompile Include="ModLoaderCore\src\IL2CPP.cpp" />
+    <ClCompile Include="ModLoaderCore\src\MonoHelper.cpp" />
     <ClCompile Include="ModLoaderCore\src\AddressablesHook.cpp" />
   </ItemGroup>
 
@@ -81,6 +82,7 @@
     <ClInclude Include="ModLoaderCore\include\Hooks.h" />
     <ClInclude Include="ModLoaderCore\include\Overlay.h" />
     <ClInclude Include="ModLoaderCore\include\IL2CPP.h" />
+    <ClInclude Include="ModLoaderCore\include\MonoHelper.h" />
     <ClInclude Include="ModLoaderCore\include\AddressablesHook.h" />
     <ClInclude Include="ModSDK\include\IModModule.h" />
     <ClInclude Include="ModSDK\include\Logger.h" />

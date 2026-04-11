@@ -2,10 +2,14 @@
 cd /d D:\SuperBattleGolfModLoader
 
 REM Set up Visual Studio environment
-call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat"
+call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+if %ERRORLEVEL% NEQ 0 (
+    echo Failed to initialize Visual Studio 2022 build environment
+    exit /b %ERRORLEVEL%
+)
 
 REM Compile ModLoaderCore.dll
-set CL_COMPILER="C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\bin\Hostx64\x64\cl.exe"
+set CL_COMPILER=cl.exe
 
 %CL_COMPILER% ^
   /D_WINDOWS /D_USRDLL /D_WINDLL ^
@@ -15,6 +19,7 @@ set CL_COMPILER="C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\
   ModLoaderCore\src\Hooks.cpp ^
   ModLoaderCore\src\Overlay.cpp ^
   ModLoaderCore\src\ModManager.cpp ^
+  ModLoaderCore\src\MonoHelper.cpp ^
   ModLoaderCore\src\Log.cpp ^
   /link /DLL /OUT:"x64\Release\ModLoaderCore.dll" ^
   /SUBSYSTEM:WINDOWS /MACHINE:X64 ^
@@ -27,10 +32,12 @@ if %ERRORLEVEL% EQU 0 (
     echo.
     
     REM Copy to game directories
-    copy "x64\Release\ModLoaderCore.dll" "C:\Windows\System32\" /Y
-    copy "x64\Release\ModLoaderCore.dll" "C:\Program Files (x86)\Steam\steamapps\common\Super Battle Golf\x64\Release\" /Y
+    copy "x64\Release\ModLoaderCore.dll" "C:\Program Files (x86)\Steam\steamapps\common\Super Battle Golf\" /Y
+    if exist "C:\Program Files (x86)\Steam\steamapps\common\Super Battle Golf\x64\Release\" (
+        copy "x64\Release\ModLoaderCore.dll" "C:\Program Files (x86)\Steam\steamapps\common\Super Battle Golf\x64\Release\" /Y
+    )
     
-    echo DLL deployed to game directories
+    echo DLL deployed to game directory
 ) else (
     echo.
     echo ===== COMPILATION FAILED =====
