@@ -1,0 +1,47 @@
+# Build outputs
+*.obj
+*.exe
+*.dll
+*.lib
+*.exp
+*.pdb
+*.ilk
+*.suo
+*.user
+*.sdf
+*.opensdf
+
+# Directories
+x64/
+Debug/
+Release/
+.vs/
+build/
+Build/
+
+# Compiled mods (keep source, ignore compiled)
+Mods/*.dll
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.temp
+~*
+
+# Archives
+.archived-net-version/
+checkpoints/
+
+# Session files
+SESSION_*.md
+SUMMARY.txt
+
+# VS project files that are auto-generated
+*.vcxproj.filters
+*.vcxproj.user
+
+# Keep these
+!detours.lib
+!GameLauncher/GameLauncher.exe
