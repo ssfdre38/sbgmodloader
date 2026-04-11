@@ -2,6 +2,8 @@
 #include "Log.h"
 #include "ModManager.h"
 #include "Hooks.h"
+#include "IL2CPP.h"
+#include "AddressablesHook.h"
 #include <thread>
 
 using namespace ModLoader;
@@ -27,7 +29,28 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
             LoadLibraryA(dllPath);  // Increment reference count
             Log::Info("[CORE] Incremented DLL reference count to prevent unload");
             
-            // Initialize hooks first (before any game initialization)
+            // Initialize IL2CPP integration FIRST (required for everything else)
+            Log::Info("[CORE] Initializing IL2CPP integration...");
+            bool il2cppSuccess = IL2CPP::IL2CPPHelper::Initialize();
+            if (il2cppSuccess) {
+                Log::Info("[CORE] ✓ IL2CPP integration initialized!");
+                
+                // Dump loaded assemblies for debugging
+                IL2CPP::IL2CPPHelper::DumpAssemblies();
+                
+                // Initialize Addressables hooks (for custom maps!)
+                bool addressablesSuccess = Addressables::AddressablesHook::Initialize();
+                if (addressablesSuccess) {
+                    Log::Info("[CORE] ✓ Addressables hooks initialized!");
+                    Addressables::AddressablesHook::DumpAddressablesInfo();
+                } else {
+                    Log::Info("[CORE] ⚠ Addressables hooks initialization failed (may not be loaded yet)");
+                }
+            } else {
+                Log::Info("[CORE] ✗ IL2CPP integration failed! Some features will be unavailable.");
+            }
+            
+            // Initialize hooks (overlay system)
             Hooks::Initialize();
             Log::Info("[CORE] Hooks initialized");
             

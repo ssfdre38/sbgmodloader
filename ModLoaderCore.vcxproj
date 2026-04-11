@@ -22,13 +22,13 @@
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v170</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v170</PlatformToolset>
   </PropertyGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -42,7 +42,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)ModLoaderCore\include;$(ProjectDir)ModSDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -58,7 +58,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)ModLoaderCore\include;$(ProjectDir)ModSDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -70,12 +70,16 @@
     <ClCompile Include="ModLoaderCore\src\Log.cpp" />
     <ClCompile Include="ModLoaderCore\src\ModManager.cpp" />
     <ClCompile Include="ModLoaderCore\src\Hooks.cpp" />
+    <ClCompile Include="ModLoaderCore\src\IL2CPP.cpp" />
+    <ClCompile Include="ModLoaderCore\src\AddressablesHook.cpp" />
   </ItemGroup>
 
   <ItemGroup>
     <ClInclude Include="ModLoaderCore\include\Log.h" />
     <ClInclude Include="ModLoaderCore\include\ModManager.h" />
     <ClInclude Include="ModLoaderCore\include\Hooks.h" />
+    <ClInclude Include="ModLoaderCore\include\IL2CPP.h" />
+    <ClInclude Include="ModLoaderCore\include\AddressablesHook.h" />
     <ClInclude Include="ModSDK\include\IModModule.h" />
     <ClInclude Include="ModSDK\include\Logger.h" />
     <ClInclude Include="ModSDK\include\Il2CppApi.h" />
