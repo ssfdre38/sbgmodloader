@@ -107,6 +107,14 @@ public:
     static const char* GetMethodName(MonoMethod* method);
     static int GetMethodParamCount(MonoMethod* method);
     
+    // Boxing helpers for value types (needed for passing enums, ints, etc. to methods)
+    // NOTE: Commented out - unsafe without proper Mono API
+    // static MonoObject* BoxInt32(int value);
+    // static MonoObject* BoxBoolean(bool value);
+    
+    // Exception handling
+    static void LogException(MonoObject* exception);
+    
     // Dump all loaded assemblies and classes (for debugging)
     static void DumpAssemblies();
     static void DumpClassMethods(MonoClass* klass);

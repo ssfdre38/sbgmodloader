@@ -8,17 +8,7 @@ namespace fs = std::filesystem;
 /// Inject a DLL into a running process using CreateRemoteThread
 bool InjectDll(HANDLE hProcess, const char* dllPath) {
     printf("[*] Injecting DLL: %s\n", dllPath);
-    
-    // First, try to load the DLL in our own process to verify it's valid
-    HMODULE testLoad = LoadLibraryA(dllPath);
-    if (testLoad) {
-        printf("[+] DLL is valid and loadable (tested in launcher process)\n");
-        FreeLibrary(testLoad);
-    } else {
-        printf("[-] DLL cannot be loaded even in launcher (error: %lu)\n", GetLastError());
-        printf("[-] Trying anyway, but this is suspicious...\n");
-    }
-    
+
     // Allocate memory in target process for DLL path
     size_t pathLen = strlen(dllPath) + 1;
     LPVOID remotePath = VirtualAllocEx(hProcess, NULL, pathLen, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -91,7 +81,7 @@ bool InjectDll(HANDLE hProcess, const char* dllPath) {
     
     printf("[+] DLL injection returned success code\n");
     printf("[!] Note: This only means LoadLibraryA returned non-null\n");
-    printf("[!] Actual loading should be verified by looking for C:\\sbg_dll_loaded.txt\n");
+    printf("[!] Verify initialization through the mod loader log file\n");
     return true;
 }
 
@@ -101,32 +91,30 @@ int main(int argc, char* argv[]) {
     printf("================================\n\n");
     
     char gamePathBuffer[MAX_PATH];
-    char dllPathBuffer[MAX_PATH];
     char currentDir[MAX_PATH];
     
     GetCurrentDirectoryA(MAX_PATH, currentDir);
-    
-    // Try to find DLL in multiple locations (priority order)
-    const char* dllLocations[] = {
-        "C:\\Windows\\System32\\ModLoaderCore.dll",  // System32 (preferred)
-        "ModLoaderCore.dll",                         // Current directory
-        ".\\x64\\Release\\ModLoaderCore.dll"         // Fallback to subfolder
+
+    fs::path currentPath(currentDir);
+    fs::path dllCandidates[] = {
+        currentPath / "ModLoaderCore.dll",
+        currentPath / "x64" / "Release" / "ModLoaderCore.dll"
     };
-    
-    const char* modLoaderPath = nullptr;
-    for (int i = 0; i < 3; i++) {
-        if (fs::exists(dllLocations[i])) {
-            modLoaderPath = dllLocations[i];
+
+    std::string modLoaderPath;
+    for (const auto& candidate : dllCandidates) {
+        if (fs::exists(candidate)) {
+            modLoaderPath = candidate.string();
             break;
         }
     }
-    
+
     snprintf(gamePathBuffer, MAX_PATH, "%s\\Super Battle Golf.exe", currentDir);
     
     const char* gamePath = gamePathBuffer;
     
     printf("Game: %s\n", gamePath);
-    printf("Mod Loader DLL: %s\n", modLoaderPath ? modLoaderPath : "(not found)");
+    printf("Mod Loader DLL: %s\n", modLoaderPath.empty() ? "(not found)" : modLoaderPath.c_str());
     
     // Check if game exists
     if (!fs::exists(gamePath)) {
@@ -137,11 +125,11 @@ int main(int argc, char* argv[]) {
     printf("✓ Game executable found\n");
     
     // Check if DLL exists
-    if (!modLoaderPath) {
+    if (modLoaderPath.empty()) {
         printf("ERROR: ModLoaderCore.dll not found in expected locations\n");
         printf("  Checked:\n");
-        for (int i = 0; i < 3; i++) {
-            printf("    - %s\n", dllLocations[i]);
+        for (const auto& candidate : dllCandidates) {
+            printf("    - %s\n", candidate.string().c_str());
         }
         return 1;
     }
@@ -161,7 +149,7 @@ int main(int argc, char* argv[]) {
     printf("✓ Game process started (PID: %lu)\n", processInfo.dwProcessId);
     
     // Inject DLL before resuming game thread
-    if (!InjectDll(processInfo.hProcess, modLoaderPath)) {
+    if (!InjectDll(processInfo.hProcess, modLoaderPath.c_str())) {
         printf("ERROR: Failed to inject mod loader DLL\n");
         TerminateProcess(processInfo.hProcess, 1);
         CloseHandle(processInfo.hProcess);

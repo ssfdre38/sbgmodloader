@@ -234,6 +234,7 @@ MonoObject* MonoHelper::InvokeStaticMethod(MonoMethod* method, void** params) {
     
     if (exception) {
         LOG_ERROR("Exception occurred during method invocation!");
+        LogException(exception);
         return nullptr;
     }
     
@@ -256,6 +257,7 @@ MonoObject* MonoHelper::InvokeInstanceMethod(MonoMethod* method, void* instance,
     
     if (exception) {
         LOG_ERROR("Exception occurred during method invocation!");
+        LogException(exception);
         return nullptr;
     }
     
@@ -469,6 +471,61 @@ void* MonoHelper::UnboxObject(MonoObject* obj) {
 const char* MonoHelper::MonoStringToUTF8(MonoString* monoStr) {
     if (!monoStr || !mono_string_to_utf8) return nullptr;
     return mono_string_to_utf8(monoStr);
+}
+
+// NOTE: Boxing methods commented out - unsafe without proper Mono API knowledge
+// These assume Mono object layout which is opaque and version-dependent
+// If needed in future, use mono_value_box() API or reflection to find field offsets
+/*
+MonoObject* MonoHelper::BoxInt32(int value) {
+    // UNSAFE: Assumes sizeof(MonoObject) matches Mono's actual header size
+    // This can corrupt heap memory
+    // TODO: Use mono_value_box() or proper reflection
+}
+
+MonoObject* MonoHelper::BoxBoolean(bool value) {
+    // UNSAFE: Same issue as BoxInt32
+    // TODO: Use mono_value_box() or proper reflection  
+}
+*/
+
+void MonoHelper::LogException(MonoObject* exception) {
+    if (!exception) return;
+    
+    MonoClass* exClass = GetObjectClass(exception);
+    if (!exClass) {
+        LOG_ERROR("Exception object has no class!");
+        return;
+    }
+    
+    const char* exType = GetClassName(exClass);
+    LOG_ERROR("Mono exception: %s", exType ? exType : "Unknown");
+    
+    // Try to get exception message
+    MonoMethod* getMessageMethod = FindMethod(exClass, "get_Message", 0);
+    if (getMessageMethod) {
+        MonoObject* messageObj = InvokeInstanceMethod(getMessageMethod, exception, nullptr);
+        if (messageObj) {
+            MonoString* messageStr = (MonoString*)messageObj;
+            const char* message = MonoStringToUTF8(messageStr);
+            if (message) {
+                LOG_ERROR("  Message: %s", message);
+            }
+        }
+    }
+    
+    // Try to get stack trace
+    MonoMethod* getStackTraceMethod = FindMethod(exClass, "get_StackTrace", 0);
+    if (getStackTraceMethod) {
+        MonoObject* stackTraceObj = InvokeInstanceMethod(getStackTraceMethod, exception, nullptr);
+        if (stackTraceObj) {
+            MonoString* stackTraceStr = (MonoString*)stackTraceObj;
+            const char* stackTrace = MonoStringToUTF8(stackTraceStr);
+            if (stackTrace) {
+                LOG_ERROR("  Stack Trace:\n%s", stackTrace);
+            }
+        }
+    }
 }
 
 } // namespace Mono

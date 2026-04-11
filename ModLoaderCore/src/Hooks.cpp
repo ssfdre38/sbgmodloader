@@ -47,29 +47,33 @@ void Hooks::Initialize() {
             
             if (!gameWindow) {
                 // Also try finding by enumerating process windows
-                DWORD processId = GetCurrentProcessId();
+                struct WindowSearchData {
+                    DWORD processId;
+                    HWND foundWindow;
+                };
+                
+                WindowSearchData searchData = { GetCurrentProcessId(), nullptr };
+                
                 EnumWindows([](HWND hwnd, LPARAM lParam) -> BOOL {
+                    WindowSearchData* pData = (WindowSearchData*)lParam;
                     DWORD windowProcessId;
                     GetWindowThreadProcessId(hwnd, &windowProcessId);
                     
-                    DWORD* pProcessId = (DWORD*)lParam;
-                    if (windowProcessId == *pProcessId && IsWindowVisible(hwnd)) {
+                    if (windowProcessId == pData->processId && IsWindowVisible(hwnd)) {
                         char windowTitle[256];
                         GetWindowTextA(hwnd, windowTitle, sizeof(windowTitle));
                         
                         // Look for main game window (has title, visible, not a child)
                         if (strlen(windowTitle) > 0 && GetParent(hwnd) == nullptr) {
-                            // Store in second DWORD of lParam
-                            *(HWND*)(pProcessId + 1) = hwnd;
+                            pData->foundWindow = hwnd;
                             return FALSE;  // Stop enumeration
                         }
                     }
                     
                     return TRUE;  // Continue
-                }, (LPARAM)&processId);
+                }, (LPARAM)&searchData);
                 
-                // Check if we found a window
-                gameWindow = *(HWND*)((DWORD*)&processId + 1);
+                gameWindow = searchData.foundWindow;
             }
             
             if (gameWindow) {

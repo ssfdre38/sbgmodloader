@@ -14,11 +14,12 @@ set CL_COMPILER=cl.exe
 %CL_COMPILER% ^
   /D_WINDOWS /D_USRDLL /D_WINDLL ^
   /EHsc /W3 /O2 /std:c++17 ^
-  /I"ModSDK\include" /I"ThirdParty\include" /I"ModLoaderCore\include" ^
+  /I"ModSDK\include" /I"ThirdParty\include" /I"ThirdParty\json" /I"ModLoaderCore\include" ^
   ModLoaderCore\src\dllmain.cpp ^
   ModLoaderCore\src\Hooks.cpp ^
   ModLoaderCore\src\Overlay.cpp ^
   ModLoaderCore\src\ModManager.cpp ^
+  ModLoaderCore\src\ModInfo.cpp ^
   ModLoaderCore\src\MonoHelper.cpp ^
   ModLoaderCore\src\Log.cpp ^
   /link /DLL /OUT:"x64\Release\ModLoaderCore.dll" ^
