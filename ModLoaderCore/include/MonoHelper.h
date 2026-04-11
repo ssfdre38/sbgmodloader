@@ -48,6 +48,9 @@ typedef void* (*mono_method_signature_fn)(MonoMethod* method);
 typedef int (*mono_signature_get_param_count_fn)(void* sig);
 typedef MonoClass* (*mono_object_get_class_fn)(MonoObject* obj);
 typedef void* (*mono_object_unbox_fn)(MonoObject* obj);
+typedef const void* (*mono_image_get_table_info_fn)(MonoImage* image, int table_id);
+typedef int (*mono_table_info_get_rows_fn)(const void* table_info);
+typedef MonoClass* (*mono_class_get_fn)(MonoImage* image, unsigned int type_token);
 
 class MonoHelper {
 public:
@@ -119,6 +122,13 @@ public:
     static void DumpAssemblies();
     static void DumpClassMethods(MonoClass* klass);
     
+    // Enumerate all classes in an image
+    static std::vector<MonoClass*> GetAllClasses(MonoImage* image);
+    static std::vector<std::string> GetAllClassNames(MonoImage* image);
+    
+    // Public access to mono function pointers needed by other modules
+    static mono_assembly_get_image_fn mono_assembly_get_image;
+
 private:
     static bool s_Initialized;
     static HMODULE s_MonoModule;
@@ -129,7 +139,6 @@ private:
     static mono_domain_get_fn mono_domain_get;
     static mono_domain_foreach_fn mono_domain_foreach;
     static mono_assembly_foreach_fn mono_assembly_foreach;
-    static mono_assembly_get_image_fn mono_assembly_get_image;
     static mono_image_get_name_fn mono_image_get_name;
     static mono_class_from_name_fn mono_class_from_name;
     static mono_class_get_method_from_name_fn mono_class_get_method_from_name;
@@ -152,6 +161,9 @@ private:
     static mono_signature_get_param_count_fn mono_signature_get_param_count;
     static mono_object_get_class_fn mono_object_get_class;
     static mono_object_unbox_fn mono_object_unbox;
+    static mono_image_get_table_info_fn mono_image_get_table_info;
+    static mono_table_info_get_rows_fn mono_table_info_get_rows;
+    static mono_class_get_fn mono_class_get;
     
     // Helper to get exported function from mono-2.0-bdwgc.dll
     template<typename T>

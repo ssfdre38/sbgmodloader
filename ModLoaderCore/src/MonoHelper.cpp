@@ -39,6 +39,9 @@ mono_method_signature_fn MonoHelper::mono_method_signature = nullptr;
 mono_signature_get_param_count_fn MonoHelper::mono_signature_get_param_count = nullptr;
 mono_object_get_class_fn MonoHelper::mono_object_get_class = nullptr;
 mono_object_unbox_fn MonoHelper::mono_object_unbox = nullptr;
+mono_image_get_table_info_fn MonoHelper::mono_image_get_table_info = nullptr;
+mono_table_info_get_rows_fn MonoHelper::mono_table_info_get_rows = nullptr;
+mono_class_get_fn MonoHelper::mono_class_get = nullptr;
 
 template<typename T>
 bool MonoHelper::GetExport(const char* name, T& outFunc) {
@@ -98,6 +101,9 @@ bool MonoHelper::Initialize(HMODULE monoModule) {
     success &= GetExport("mono_signature_get_param_count", mono_signature_get_param_count);
     success &= GetExport("mono_object_get_class", mono_object_get_class);
     success &= GetExport("mono_object_unbox", mono_object_unbox);
+    success &= GetExport("mono_image_get_table_info", mono_image_get_table_info);
+    success &= GetExport("mono_table_info_get_rows", mono_table_info_get_rows);
+    success &= GetExport("mono_class_get", mono_class_get);
     
     if (!success) {
         LOG_ERROR("Failed to load all Mono exports!");
@@ -526,6 +532,59 @@ void MonoHelper::LogException(MonoObject* exception) {
             }
         }
     }
+}
+
+std::vector<MonoClass*> MonoHelper::GetAllClasses(MonoImage* image) {
+    std::vector<MonoClass*> classes;
+    
+    if (!image || !mono_image_get_table_info || !mono_table_info_get_rows || !mono_class_get) {
+        LOG_ERROR("Required functions not loaded for class enumeration!");
+        return classes;
+    }
+    
+    // MONO_TABLE_TYPEDEF = 2 (TypeDef table)
+    const int MONO_TABLE_TYPEDEF = 2;
+    
+    const void* table_info = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+    if (!table_info) {
+        LOG_ERROR("Failed to get TypeDef table from image!");
+        return classes;
+    }
+    
+    int rows = mono_table_info_get_rows(table_info);
+    LOG_INFO("Found %d types in image", rows);
+    
+    // Type tokens start at 0x02000001
+    for (int i = 0; i < rows; i++) {
+        unsigned int token = (MONO_TABLE_TYPEDEF << 24) | (i + 1);
+        MonoClass* klass = mono_class_get(image, token);
+        if (klass) {
+            classes.push_back(klass);
+        }
+    }
+    
+    return classes;
+}
+
+std::vector<std::string> MonoHelper::GetAllClassNames(MonoImage* image) {
+    std::vector<std::string> names;
+    
+    auto classes = GetAllClasses(image);
+    for (auto klass : classes) {
+        const char* nameSpace = GetClassNamespace(klass);
+        const char* className = GetClassName(klass);
+        
+        std::string fullName;
+        if (nameSpace && strlen(nameSpace) > 0) {
+            fullName = std::string(nameSpace) + "." + std::string(className);
+        } else {
+            fullName = std::string(className);
+        }
+        
+        names.push_back(fullName);
+    }
+    
+    return names;
 }
 
 } // namespace Mono

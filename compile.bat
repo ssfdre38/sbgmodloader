@@ -21,6 +21,7 @@ set CL_COMPILER=cl.exe
   ModLoaderCore\src\ModManager.cpp ^
   ModLoaderCore\src\ModInfo.cpp ^
   ModLoaderCore\src\MonoHelper.cpp ^
+  ModLoaderCore\src\GameExplorer.cpp ^
   ModLoaderCore\src\Log.cpp ^
   /link /DLL /OUT:"x64\Release\ModLoaderCore.dll" ^
   /SUBSYSTEM:WINDOWS /MACHINE:X64 ^

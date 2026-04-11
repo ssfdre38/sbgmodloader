@@ -3,6 +3,7 @@
 #include "MonoHelper.h"
 #include "ModManager.h"
 #include "Hooks.h"
+#include "GameExplorer.h"
 
 using namespace ModLoader;
 
@@ -35,6 +36,15 @@ DWORD WINAPI InitializeModLoaderThread(LPVOID) {
             
             Log::Info("");
             Log::Info("✅ Mono integration ready!");
+            Log::Info("");
+            
+            // Explore game architecture
+            Log::Info("[CORE] Exploring game architecture...");
+            GameExplorer::ExploreGame();
+            
+            // Export findings to file
+            std::string exportPath = std::string(getenv("APPDATA")) + "\\sbg-mod-loader\\game-architecture.md";
+            GameExplorer::ExportToFile(exportPath.c_str());
             Log::Info("");
         } else {
             Log::Info("[CORE] Mono integration failed; continuing without Mono features");
