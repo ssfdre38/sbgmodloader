@@ -1,0 +1,20 @@
+{
+  "id": "test-battle-royale",
+  "name": "Test Battle Royale",
+  "author": "ModLoader Team",
+  "version": "1.0.0",
+  "description": "Test custom game mode with 3 holes",
+  "type": "gamemode",
+  "gamemode": {
+    "holes": [
+      "CourseSelectionDesert01",
+      "CourseSelectionDesert02",
+      "CourseSelectionDesert03"
+    ],
+    "rules": {
+      "overtimeDuration": 120.0,
+      "itemSpawnChance": 0.8,
+      "allowCustomItems": true
+    }
+  }
+}

@@ -42,6 +42,11 @@ mono_object_unbox_fn MonoHelper::mono_object_unbox = nullptr;
 mono_image_get_table_info_fn MonoHelper::mono_image_get_table_info = nullptr;
 mono_table_info_get_rows_fn MonoHelper::mono_table_info_get_rows = nullptr;
 mono_class_get_fn MonoHelper::mono_class_get = nullptr;
+mono_class_get_property_from_name_fn MonoHelper::mono_class_get_property_from_name = nullptr;
+mono_property_get_get_method_fn MonoHelper::mono_property_get_get_method = nullptr;
+mono_property_get_set_method_fn MonoHelper::mono_property_get_set_method = nullptr;
+mono_runtime_object_init_fn MonoHelper::mono_runtime_object_init = nullptr;
+mono_class_get_parent_fn MonoHelper::mono_class_get_parent = nullptr;
 
 template<typename T>
 bool MonoHelper::GetExport(const char* name, T& outFunc) {
@@ -104,6 +109,11 @@ bool MonoHelper::Initialize(HMODULE monoModule) {
     success &= GetExport("mono_image_get_table_info", mono_image_get_table_info);
     success &= GetExport("mono_table_info_get_rows", mono_table_info_get_rows);
     success &= GetExport("mono_class_get", mono_class_get);
+    success &= GetExport("mono_class_get_property_from_name", mono_class_get_property_from_name);
+    success &= GetExport("mono_property_get_get_method", mono_property_get_get_method);
+    success &= GetExport("mono_property_get_set_method", mono_property_get_set_method);
+    success &= GetExport("mono_runtime_object_init", mono_runtime_object_init);
+    success &= GetExport("mono_class_get_parent", mono_class_get_parent);
     
     if (!success) {
         LOG_ERROR("Failed to load all Mono exports!");
@@ -585,6 +595,126 @@ std::vector<std::string> MonoHelper::GetAllClassNames(MonoImage* image) {
     }
     
     return names;
+}
+
+// Helper methods for SceneHooks and other modules
+MonoClass* MonoHelper::GetClassFromName(MonoImage* image, const char* nameSpace, const char* name) {
+    if (!mono_class_from_name) return nullptr;
+    return mono_class_from_name(image, nameSpace, name);
+}
+
+MonoMethod* MonoHelper::GetMethodFromName(MonoClass* klass, const char* name, int paramCount) {
+    if (!mono_class_get_method_from_name) return nullptr;
+    return mono_class_get_method_from_name(klass, name, paramCount);
+}
+
+MonoProperty* MonoHelper::GetProperty(MonoClass* klass, const char* name) {
+    if (!mono_class_get_property_from_name) return nullptr;
+    return mono_class_get_property_from_name(klass, name);
+}
+
+MonoMethod* MonoHelper::GetPropertyGetter(MonoProperty* prop) {
+    if (!mono_property_get_get_method) return nullptr;
+    return mono_property_get_get_method(prop);
+}
+
+MonoObject* MonoHelper::InvokeMethod(MonoMethod* method, void* instance, void** params, MonoObject** exception) {
+    if (!mono_runtime_invoke) return nullptr;
+    return (MonoObject*)mono_runtime_invoke(method, instance, params, exception);
+}
+
+MonoMethod* MonoHelper::GetPropertySetter(MonoProperty* prop) {
+    if (!prop || !mono_property_get_set_method) {
+        return nullptr;
+    }
+    return (MonoMethod*)mono_property_get_set_method(prop);
+}
+
+MonoObject* MonoHelper::CreateInstance(MonoClass* klass) {
+    if (!klass || !mono_object_new || !mono_runtime_object_init) {
+        LOG_ERROR("CreateInstance: Invalid parameters or Mono not initialized");
+        return nullptr;
+    }
+    
+    // Create the object
+    MonoObject* obj = mono_object_new(s_RootDomain, klass);
+    if (!obj) {
+        LOG_ERROR("CreateInstance: mono_object_new failed");
+        return nullptr;
+    }
+    
+    // Initialize it (calls constructor)
+    mono_runtime_object_init(obj);
+    
+    return obj;
+}
+
+void MonoHelper::SetPropertyValue(MonoObject* obj, const char* propertyName, void* value) {
+    if (!obj || !propertyName) {
+        LOG_ERROR("SetPropertyValue: Invalid parameters");
+        return;
+    }
+    
+    MonoClass* klass = mono_object_get_class(obj);
+    if (!klass) {
+        LOG_ERROR("SetPropertyValue: Failed to get object class");
+        return;
+    }
+    
+    MonoProperty* prop = GetProperty(klass, propertyName);
+    if (!prop) {
+        LOG_ERROR("SetPropertyValue: Property '%s' not found", propertyName);
+        return;
+    }
+    
+    MonoMethod* setter = GetPropertySetter(prop);
+    if (!setter) {
+        LOG_ERROR("SetPropertyValue: Property '%s' has no setter", propertyName);
+        return;
+    }
+    
+    void* params[1] = { value };
+    MonoObject* exception = nullptr;
+    mono_runtime_invoke(setter, obj, params, &exception);
+    
+    if (exception) {
+        LogException(exception);
+    }
+}
+
+MonoObject* MonoHelper::GetPropertyValue(MonoObject* obj, const char* propertyName) {
+    if (!obj || !propertyName) {
+        LOG_ERROR("GetPropertyValue: Invalid parameters");
+        return nullptr;
+    }
+    
+    MonoClass* klass = mono_object_get_class(obj);
+    if (!klass) {
+        LOG_ERROR("GetPropertyValue: Failed to get object class");
+        return nullptr;
+    }
+    
+    MonoProperty* prop = GetProperty(klass, propertyName);
+    if (!prop) {
+        LOG_ERROR("GetPropertyValue: Property '%s' not found", propertyName);
+        return nullptr;
+    }
+    
+    MonoMethod* getter = GetPropertyGetter(prop);
+    if (!getter) {
+        LOG_ERROR("GetPropertyValue: Property '%s' has no getter", propertyName);
+        return nullptr;
+    }
+    
+    MonoObject* exception = nullptr;
+    MonoObject* result = (MonoObject*)mono_runtime_invoke(getter, obj, nullptr, &exception);
+    
+    if (exception) {
+        LogException(exception);
+        return nullptr;
+    }
+    
+    return result;
 }
 
 } // namespace Mono

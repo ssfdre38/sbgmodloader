@@ -15,6 +15,7 @@ typedef void* MonoString;
 typedef void* MonoArray;
 typedef void* MonoThread;
 typedef void* MonoMethodDesc;
+typedef void* MonoProperty;
 
 namespace ModLoader {
 namespace Mono {
@@ -51,6 +52,13 @@ typedef void* (*mono_object_unbox_fn)(MonoObject* obj);
 typedef const void* (*mono_image_get_table_info_fn)(MonoImage* image, int table_id);
 typedef int (*mono_table_info_get_rows_fn)(const void* table_info);
 typedef MonoClass* (*mono_class_get_fn)(MonoImage* image, unsigned int type_token);
+typedef MonoProperty* (*mono_class_get_property_from_name_fn)(MonoClass* klass, const char* name);
+typedef MonoMethod* (*mono_property_get_get_method_fn)(MonoProperty* prop);
+typedef MonoMethod* (*mono_property_get_set_method_fn)(MonoProperty* prop);
+typedef void (*mono_runtime_object_init_fn)(MonoObject* obj);
+typedef MonoClass* (*mono_class_get_parent_fn)(MonoClass* klass);
+typedef void* (*mono_field_get_value_fn)(MonoObject* obj, void* field, void* value);
+typedef void (*mono_field_set_value_fn)(MonoObject* obj, void* field, void* value);
 
 class MonoHelper {
 public:
@@ -126,6 +134,19 @@ public:
     static std::vector<MonoClass*> GetAllClasses(MonoImage* image);
     static std::vector<std::string> GetAllClassNames(MonoImage* image);
     
+    // Class and property helpers
+    static MonoClass* GetClassFromName(MonoImage* image, const char* nameSpace, const char* name);
+    static MonoMethod* GetMethodFromName(MonoClass* klass, const char* name, int paramCount);
+    static MonoProperty* GetProperty(MonoClass* klass, const char* name);
+    static MonoMethod* GetPropertyGetter(MonoProperty* prop);
+    static MonoMethod* GetPropertySetter(MonoProperty* prop);
+    static MonoObject* InvokeMethod(MonoMethod* method, void* instance, void** params, MonoObject** exception);
+    
+    // Object creation and manipulation
+    static MonoObject* CreateInstance(MonoClass* klass);
+    static void SetPropertyValue(MonoObject* obj, const char* propertyName, void* value);
+    static MonoObject* GetPropertyValue(MonoObject* obj, const char* propertyName);
+    
     // Public access to mono function pointers needed by other modules
     static mono_assembly_get_image_fn mono_assembly_get_image;
 
@@ -164,6 +185,11 @@ private:
     static mono_image_get_table_info_fn mono_image_get_table_info;
     static mono_table_info_get_rows_fn mono_table_info_get_rows;
     static mono_class_get_fn mono_class_get;
+    static mono_class_get_property_from_name_fn mono_class_get_property_from_name;
+    static mono_property_get_get_method_fn mono_property_get_get_method;
+    static mono_property_get_set_method_fn mono_property_get_set_method;
+    static mono_runtime_object_init_fn mono_runtime_object_init;
+    static mono_class_get_parent_fn mono_class_get_parent;
     
     // Helper to get exported function from mono-2.0-bdwgc.dll
     template<typename T>

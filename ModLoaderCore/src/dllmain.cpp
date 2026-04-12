@@ -4,10 +4,41 @@
 #include "ModManager.h"
 #include "Hooks.h"
 #include "GameExplorer.h"
+#include "SceneHooks.h"
+#include "GameModeManager.h"
+#include "UIOverlay.h"
 
 using namespace ModLoader;
 
 namespace {
+
+// Global flag to control update loop
+static bool g_UpdateLoopRunning = true;
+
+// UI test loop - tries to inject version text periodically
+DWORD WINAPI UITestLoopThread(LPVOID) {
+    Log::Info("[CORE] UI test loop thread started");
+    
+    // Wait for game to get to main menu
+    Log::Info("[CORE] Waiting 30 seconds for game to reach main menu...");
+    Sleep(30000);
+    Log::Info("[CORE] Starting UI injection test loop");
+    
+    int attemptCount = 0;
+    while (g_UpdateLoopRunning) {
+        attemptCount++;
+        Log::Info("[CORE] UI injection attempt #%d", attemptCount);
+        
+        // Try to inject version text
+        UIOverlay::TestAddVersionText();
+        
+        // Try every 10 seconds until successful
+        Sleep(10000);
+    }
+    
+    Log::Info("[CORE] UI test loop thread exiting");
+    return 0;
+}
 
 DWORD WINAPI InitializeModLoaderThread(LPVOID) {
     Log::Info("[CORE] ModLoaderCore.dll attached to process");
@@ -50,6 +81,21 @@ DWORD WINAPI InitializeModLoaderThread(LPVOID) {
             std::string exportPath = std::string(getenv("APPDATA")) + "\\sbg-mod-loader\\game-architecture.md";
             GameExplorer::ExportToFile(exportPath.c_str());
             Log::Info("");
+            
+            // Initialize scene hooks
+            Log::Info("[CORE] Initializing scene hooks...");
+            SceneHooks::Initialize();
+            
+            // Initialize game mode manager
+            Log::Info("[CORE] Initializing game mode manager...");
+            GameModeManager::Initialize();
+            
+            // Start UI test loop thread
+            HANDLE uiTestThread = CreateThread(nullptr, 0, UITestLoopThread, nullptr, 0, nullptr);
+            if (uiTestThread) {
+                CloseHandle(uiTestThread);
+                Log::Info("[CORE] UI test loop thread started");
+            }
         } else {
             Log::Info("[CORE] Mono integration failed; continuing without Mono features");
         }
@@ -78,6 +124,11 @@ DWORD WINAPI InitializeModLoaderThread(LPVOID) {
     // Discover and load mods
     ModManager::Instance().DiscoverMods(modsPath);
     ModManager::Instance().LoadAllMods();
+    
+    // Pass discovered mods to GameModeManager
+    Log::Info("[CORE] Loading custom game modes...");
+    GameModeManager::LoadGameModes(ModManager::Instance().GetDiscoveredMods());
+    
     ModManager::Instance().InitializeAllMods();
     
     Log::Info("");
@@ -104,6 +155,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
             break;
         }
         case DLL_PROCESS_DETACH:
+            g_UpdateLoopRunning = false;
+            Sleep(100); // Give update thread time to exit
             ModManager::Instance().UnloadAllMods();
             break;
     }
