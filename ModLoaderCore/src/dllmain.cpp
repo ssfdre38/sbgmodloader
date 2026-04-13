@@ -7,6 +7,9 @@
 #include "SceneHooks.h"
 #include "GameModeManager.h"
 #include "UIOverlay.h"
+#include "CosmeticsExplorer.h"
+#include "CharacterManager.h"
+#include "ItemManager.h"
 
 using namespace ModLoader;
 
@@ -82,6 +85,11 @@ DWORD WINAPI InitializeModLoaderThread(LPVOID) {
             GameExplorer::ExportToFile(exportPath.c_str());
             Log::Info("");
             
+            // Explore cosmetics system for CharacterManager development
+            Log::Info("[CORE] Exploring cosmetics system...");
+            CosmeticsExplorer::ExploreCosmeticsSystem();
+            Log::Info("");
+            
             // Initialize scene hooks
             Log::Info("[CORE] Initializing scene hooks...");
             SceneHooks::Initialize();
@@ -89,6 +97,16 @@ DWORD WINAPI InitializeModLoaderThread(LPVOID) {
             // Initialize game mode manager
             Log::Info("[CORE] Initializing game mode manager...");
             GameModeManager::Initialize();
+            
+            // Initialize character manager
+            Log::Info("[CORE] Initializing character manager...");
+            CharacterManager::Initialize();
+            CharacterManager::LoadCharacterMods();
+            
+            // Initialize item manager
+            Log::Info("[CORE] Initializing item manager...");
+            ItemManager::Initialize();
+            ItemManager::LoadItemMods();
             
             // Start UI test loop thread
             HANDLE uiTestThread = CreateThread(nullptr, 0, UITestLoopThread, nullptr, 0, nullptr);
