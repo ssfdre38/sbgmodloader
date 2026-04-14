@@ -28,6 +28,7 @@ set CL_COMPILER=cl.exe
   ModLoaderCore\src\CosmeticsExplorer.cpp ^
   ModLoaderCore\src\CharacterManager.cpp ^
   ModLoaderCore\src\ItemManager.cpp ^
+  ModLoaderCore\src\NetworkSyncManager.cpp ^
   ModLoaderCore\src\Log.cpp ^
   /link /DLL /OUT:"x64\Release\ModLoaderCore.dll" ^
   /SUBSYSTEM:WINDOWS /MACHINE:X64 ^

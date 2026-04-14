@@ -10,6 +10,7 @@
 #include "CosmeticsExplorer.h"
 #include "CharacterManager.h"
 #include "ItemManager.h"
+#include "NetworkSyncManager.h"
 
 using namespace ModLoader;
 
@@ -107,6 +108,10 @@ DWORD WINAPI InitializeModLoaderThread(LPVOID) {
             Log::Info("[CORE] Initializing item manager...");
             ItemManager::Initialize();
             ItemManager::LoadItemMods();
+            
+            // Initialize network sync manager
+            Log::Info("[CORE] Initializing network sync manager...");
+            NetworkSyncManager::Initialize();
             
             // Start UI test loop thread
             HANDLE uiTestThread = CreateThread(nullptr, 0, UITestLoopThread, nullptr, 0, nullptr);
