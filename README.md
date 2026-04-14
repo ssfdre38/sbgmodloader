@@ -20,7 +20,17 @@ A native C++ mod loader for Super Battle Golf, built from scratch without framew
 4. Add mods to `Mods/` folder
 
 ### Mod Creators
-See `docs/MODDING_GUIDE.md` for tutorials
+
+**For creating mods:**
+1. Clone this repository: `git clone https://github.com/ssfdre38/sbgmodloader.git`
+2. Check out the SDK: `git checkout sdk-package`
+3. Follow `SDK/QUICKSTART.md`
+
+**For creating maps:**
+1. Check out Map Maker: `git checkout mapmaker-tool`
+2. Install Unity 6000.3.10f1
+3. Open MapMaker project
+4. Follow `MapMaker/QUICKSTART.md`
 
 ## 📦 Mod Structure
 
@@ -67,11 +77,29 @@ Log file: `%APPDATA%\sbg-mod-loader\mod-loader.log`
 
 ## 📊 Status
 
-**20/26 features complete!**
+**24/26 features complete (92.3%)!**
 
-✅ Core injection, Mono integration, maps, game modes, characters, items, UI injection
+✅ Core injection, Mono integration, maps, game modes, characters, items, UI injection, network sync, SDK, map maker
 
-⏳ Network sync, docs, map maker, SDK, launcher, distribution
+⏳ GUI launcher, mod distribution
+
+## 📂 Repository Branches
+
+This repository is organized into separate branches for different components:
+
+- **`master`** - Core mod loader (C++ DLL, this branch)
+- **`sdk-package`** - SDK for mod developers (templates, examples, tools)
+- **`mapmaker-tool`** - Unity project for creating custom maps (no-code map editor)
+
+### Getting the SDK
+```bash
+git checkout sdk-package
+```
+
+### Getting the Map Maker
+```bash
+git checkout mapmaker-tool
+```
 
 ## 🎯 Game Info
 
