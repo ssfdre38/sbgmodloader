@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>SBGModLauncher</AssemblyName>
+    <RootNamespace>SBGModLauncher</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>ssfdre38</Authors>
+    <Product>Super Battle Golf Mod Launcher</Product>
+    <Description>GUI launcher and mod manager for Super Battle Golf</Description>
+    <Copyright>Copyright © 2026</Copyright>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+  </ItemGroup>
+
+</Project>
