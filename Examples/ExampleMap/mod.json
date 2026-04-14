@@ -1,0 +1,18 @@
+{
+  "id": "example-red-cube-arena",
+  "name": "Red Cube Arena",
+  "author": "Mod Loader Team",
+  "version": "1.0.0",
+  "description": "A simple test map with a red cube - demonstrates basic map creation",
+  "type": "map",
+  "content": {
+    "addressables": true,
+    "catalogPath": "catalog.bin"
+  },
+  "meta": {
+    "difficulty": "easy",
+    "holes": 1,
+    "environment": "test",
+    "tags": ["example", "test", "tutorial"]
+  }
+}

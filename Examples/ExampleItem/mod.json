@@ -1,0 +1,52 @@
+{
+  "id": "example-mega-weapons",
+  "name": "Mega Weapons Pack",
+  "author": "Mod Loader Team",
+  "version": "1.0.0",
+  "description": "Example custom weapons - demonstrates item creation",
+  "type": "item",
+  "items": [
+    {
+      "id": "mega-rocket",
+      "name": "Mega Rocket Launcher",
+      "type": "weapon",
+      "addressable": "CustomItemMegaRocket",
+      "description": "Massive rocket with huge explosion",
+      "stats": {
+        "damage": 100.0,
+        "explosionRadius": 10.0,
+        "cooldown": 5.0,
+        "ammo": 3
+      }
+    },
+    {
+      "id": "speed-boost-ultra",
+      "name": "Speed Boost Ultra",
+      "type": "powerup",
+      "addressable": "CustomItemSpeedBoostUltra",
+      "description": "Extreme speed boost for 10 seconds",
+      "stats": {
+        "duration": 10.0,
+        "speedMultiplier": 2.5
+      }
+    },
+    {
+      "id": "teleport-trap",
+      "name": "Teleport Trap",
+      "type": "trap",
+      "addressable": "CustomItemTeleportTrap",
+      "description": "Randomly teleports players who touch it",
+      "stats": {
+        "triggerRadius": 2.0,
+        "duration": 30.0
+      }
+    }
+  ],
+  "content": {
+    "addressables": true,
+    "catalogPath": "catalog.bin"
+  },
+  "meta": {
+    "tags": ["example", "weapons", "items", "fun"]
+  }
+}

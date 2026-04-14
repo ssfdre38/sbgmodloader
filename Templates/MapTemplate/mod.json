@@ -1,0 +1,18 @@
+{
+  "id": "my-custom-map",
+  "name": "My Custom Golf Course",
+  "author": "YourName",
+  "version": "1.0.0",
+  "description": "An amazing new golf course with unique obstacles!",
+  "type": "map",
+  "content": {
+    "addressables": true,
+    "catalogPath": "catalog.bin"
+  },
+  "meta": {
+    "difficulty": "medium",
+    "holes": 3,
+    "environment": "custom",
+    "tags": ["fun", "challenging", "creative"]
+  }
+}

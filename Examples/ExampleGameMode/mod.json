@@ -1,0 +1,27 @@
+{
+  "id": "example-battle-royale",
+  "name": "Test Battle Royale",
+  "author": "Mod Loader Team",
+  "version": "1.0.0",
+  "description": "3-hole battle royale mode - demonstrates custom game mode creation",
+  "type": "gamemode",
+  "gamemode": {
+    "holes": [
+      "CourseSelectionDesert01",
+      "CourseSelectionDesert02",
+      "CourseSelectionDesert03"
+    ],
+    "rules": {
+      "overtimeDuration": 120.0,
+      "itemSpawnChance": 0.8,
+      "allowCustomItems": true,
+      "maxPlayers": 4,
+      "teamMode": false
+    }
+  },
+  "meta": {
+    "recommendedPlayers": "2-4",
+    "playTime": "10 minutes",
+    "tags": ["example", "battle-royale", "desert"]
+  }
+}

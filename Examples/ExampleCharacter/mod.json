@@ -1,0 +1,35 @@
+{
+  "id": "example-neon-golfer",
+  "name": "Neon Golfer Skin Pack",
+  "author": "Mod Loader Team",
+  "version": "1.0.0",
+  "description": "Example character skin with neon glow effect",
+  "type": "character",
+  "character": {
+    "cosmetics": [
+      {
+        "id": "neon-golfer-skin",
+        "name": "Neon Golfer",
+        "type": "skin",
+        "addressable": "CustomCosmeticNeonGolfer",
+        "rarity": "epic",
+        "description": "Glowing neon character skin"
+      },
+      {
+        "id": "neon-hat",
+        "name": "Neon Visor",
+        "type": "hat",
+        "addressable": "CustomCosmeticNeonVisor",
+        "rarity": "rare",
+        "description": "Light-up visor accessory"
+      }
+    ]
+  },
+  "content": {
+    "addressables": true,
+    "catalogPath": "catalog.bin"
+  },
+  "meta": {
+    "tags": ["example", "skin", "cosmetic", "neon"]
+  }
+}

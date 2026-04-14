@@ -1,0 +1,27 @@
+{
+  "id": "my-character-pack",
+  "name": "My Character Pack",
+  "author": "YourName",
+  "version": "1.0.0",
+  "description": "Cool new skins and cosmetics",
+  "type": "character",
+  "character": {
+    "cosmetics": [
+      {
+        "id": "my-custom-skin",
+        "name": "My Custom Skin",
+        "type": "skin",
+        "addressable": "CustomCosmeticMySkin",
+        "rarity": "rare",
+        "description": "A unique character skin"
+      }
+    ]
+  },
+  "content": {
+    "addressables": true,
+    "catalogPath": "catalog.bin"
+  },
+  "meta": {
+    "tags": ["skin", "cosmetic", "character"]
+  }
+}

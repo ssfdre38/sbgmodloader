@@ -1,0 +1,30 @@
+{
+  "id": "my-item-pack",
+  "name": "My Item Pack",
+  "author": "YourName",
+  "version": "1.0.0",
+  "description": "Awesome new weapons and power-ups",
+  "type": "item",
+  "items": [
+    {
+      "id": "my-custom-weapon",
+      "name": "My Custom Weapon",
+      "type": "weapon",
+      "addressable": "CustomItemMyWeapon",
+      "description": "A powerful new weapon",
+      "stats": {
+        "damage": 50.0,
+        "explosionRadius": 5.0,
+        "cooldown": 3.0,
+        "ammo": 5
+      }
+    }
+  ],
+  "content": {
+    "addressables": true,
+    "catalogPath": "catalog.bin"
+  },
+  "meta": {
+    "tags": ["weapon", "item", "power-up"]
+  }
+}

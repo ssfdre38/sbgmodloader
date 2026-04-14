@@ -1,0 +1,42 @@
+{
+  "name": "com.superbattlegolf.modloader-sdk",
+  "version": "0.1.0",
+  "displayName": "Super Battle Golf Mod Loader SDK",
+  "description": "Official SDK for creating mods for Super Battle Golf. Includes templates, tools, and examples for creating custom maps, game modes, characters, and items.",
+  "unity": "6000.3",
+  "keywords": [
+    "modding",
+    "sdk",
+    "superbattlegolf",
+    "addressables"
+  ],
+  "author": {
+    "name": "Super Battle Golf Mod Community",
+    "url": "https://github.com/ssfdre38/sbgmodloader"
+  },
+  "dependencies": {
+    "com.unity.addressables": "2.8.1"
+  },
+  "samples": [
+    {
+      "displayName": "Example Custom Map",
+      "description": "A complete example of a custom golf course",
+      "path": "Samples~/ExampleMap"
+    },
+    {
+      "displayName": "Example Game Mode",
+      "description": "JSON-based custom game mode configuration",
+      "path": "Samples~/ExampleGameMode"
+    },
+    {
+      "displayName": "Example Character Mod",
+      "description": "Custom skin with cosmetics",
+      "path": "Samples~/ExampleCharacter"
+    },
+    {
+      "displayName": "Example Item Mod",
+      "description": "Custom weapon with asset bundle",
+      "path": "Samples~/ExampleItem"
+    }
+  ]
+}
