@@ -7,14 +7,19 @@
         WindowStartupLocation="CenterScreen">
     
     <Window.Resources>
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#2196F3"/>
-        <SolidColorBrush x:Key="AccentBrush" Color="#FF9800"/>
-        <SolidColorBrush x:Key="SuccessBrush" Color="#4CAF50"/>
-        <SolidColorBrush x:Key="BackgroundBrush" Color="#F5F5F5"/>
-        <SolidColorBrush x:Key="CardBrush" Color="White"/>
+        <!-- Dark golf-themed colors (matching main launcher) -->
+        <SolidColorBrush x:Key="DarkBackgroundBrush" Color="#1A1D23"/>
+        <SolidColorBrush x:Key="DarkPanelBrush" Color="#242830"/>
+        <SolidColorBrush x:Key="DarkCardBrush" Color="#2C313D"/>
+        <SolidColorBrush x:Key="GolfGreenBrush" Color="#4CAF50"/>
+        <SolidColorBrush x:Key="GolfBlueBrush" Color="#2196F3"/>
+        <SolidColorBrush x:Key="GolfOrangeBrush" Color="#FF6B35"/>
+        <SolidColorBrush x:Key="GolfGoldBrush" Color="#FFB627"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E8E9ED"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9CA3AF"/>
         
         <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Background" Value="{StaticResource GolfGreenBrush}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Padding" Value="15,8"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -24,7 +29,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
-                                CornerRadius="4"
+                                CornerRadius="6"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -37,9 +42,14 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
+        <!-- Dark TextBlock style -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
     </Window.Resources>
     
-    <Grid Background="{StaticResource BackgroundBrush}">
+    <Grid Background="{StaticResource DarkBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -49,15 +59,15 @@
         </Grid.RowDefinitions>
         
         <!-- Header -->
-        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Padding="20,15">
+        <Border Grid.Row="0" Background="{StaticResource DarkPanelBrush}" Padding="20,15" BorderBrush="{StaticResource GolfGreenBrush}" BorderThickness="0,0,0,3">
             <StackPanel>
-                <TextBlock Text="🌐 Mod Browser" FontSize="24" FontWeight="Bold" Foreground="White"/>
-                <TextBlock Text="Discover, download, and install community mods" FontSize="14" Foreground="#E0E0E0" Margin="0,2,0,0"/>
+                <TextBlock Text="🌐 MOD BROWSER" FontSize="24" FontWeight="Bold" Foreground="{StaticResource GolfGreenBrush}"/>
+                <TextBlock Text="Discover, download, and install community mods" FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,2,0,0"/>
             </StackPanel>
         </Border>
         
         <!-- Search and Filters -->
-        <Border Grid.Row="1" Background="White" Padding="15" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1">
+        <Border Grid.Row="1" Background="{StaticResource DarkCardBrush}" Padding="15" BorderBrush="#3A3F4B" BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -75,7 +85,8 @@
                 <TextBox Grid.Row="0" Grid.Column="0" 
                          Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                          Padding="10" FontSize="14" Margin="0,0,10,0"
-                         BorderBrush="#BDBDBD" BorderThickness="1">
+                         BorderBrush="#4B5563" BorderThickness="1" Background="{StaticResource DarkPanelBrush}"
+                         Foreground="{StaticResource TextPrimaryBrush}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding SearchModsCommand}"/>
                     </TextBox.InputBindings>
@@ -83,11 +94,11 @@
                 
                 <Button Grid.Row="0" Grid.Column="1" Content="🔍 Search" 
                         Command="{Binding SearchModsCommand}"
-                        Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
+                        Style="{StaticResource PrimaryButton}" Background="{StaticResource GolfBlueBrush}" Margin="0,0,10,0"/>
                 
                 <Button Grid.Row="0" Grid.Column="2" Content="⭐ Featured" 
                         Command="{Binding ShowFeaturedModsCommand}"
-                        Style="{StaticResource PrimaryButton}" Background="#FF9800" Margin="0,0,10,0"/>
+                        Style="{StaticResource PrimaryButton}" Background="{StaticResource GolfOrangeBrush}" Margin="0,0,10,0"/>
                 
                 <Button Grid.Row="0" Grid.Column="3" Content="🔄 Refresh" 
                         Command="{Binding RefreshModsCommand}"

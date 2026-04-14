@@ -67,6 +67,27 @@ namespace SBGModLauncher.ViewModels
             
             RefreshMods();
             CheckGameInstallation();
+            
+            // Show setup prompt if game not found
+            if (!GameInstalled)
+            {
+                var result = MessageBox.Show(
+                    "Super Battle Golf was not found automatically.\n\n" +
+                    "Would you like to browse for the game installation folder?\n\n" +
+                    "The game folder should contain 'Super Battle Golf.exe'.",
+                    "Game Not Found - First Time Setup",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+                    
+                if (result == MessageBoxResult.Yes)
+                {
+                    BrowseGamePath();
+                }
+            }
+            else
+            {
+                StatusMessage = $"Ready! Game found at: {GamePath}";
+            }
         }
         
         [RelayCommand]
@@ -264,17 +285,32 @@ namespace SBGModLauncher.ViewModels
         
         private string AutoDetectGamePath()
         {
-            // Common install locations
-            var possiblePaths = new[]
+            // Check launcher's parent directory first (if launcher is in game folder)
+            var launcherDir = AppDomain.CurrentDomain.BaseDirectory;
+            if (File.Exists(Path.Combine(launcherDir, "Super Battle Golf.exe")))
             {
-                @"C:\Program Files\Super Battle Golf",
-                @"C:\Program Files (x86)\Super Battle Golf",
-                @"D:\Games\Super Battle Golf",
-                @"C:\Games\Super Battle Golf",
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Super Battle Golf")
+                return launcherDir;
+            }
+            
+            // Check parent of launcher directory
+            var parentDir = Directory.GetParent(launcherDir)?.FullName;
+            if (parentDir != null && File.Exists(Path.Combine(parentDir, "Super Battle Golf.exe")))
+            {
+                return parentDir;
+            }
+            
+            // Steam common install locations
+            var steamPaths = new[]
+            {
+                @"C:\Program Files (x86)\Steam\steamapps\common\Super Battle Golf",
+                @"C:\Program Files\Steam\steamapps\common\Super Battle Golf",
+                @"D:\SteamLibrary\steamapps\common\Super Battle Golf",
+                @"D:\Steam\steamapps\common\Super Battle Golf",
+                @"E:\SteamLibrary\steamapps\common\Super Battle Golf",
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Steam\steamapps\common\Super Battle Golf")
             };
             
-            foreach (var path in possiblePaths)
+            foreach (var path in steamPaths)
             {
                 if (Directory.Exists(path) && File.Exists(Path.Combine(path, "Super Battle Golf.exe")))
                 {
@@ -282,15 +318,74 @@ namespace SBGModLauncher.ViewModels
                 }
             }
             
-            // Check current directory
-            var currentDir = Directory.GetCurrentDirectory();
-            if (File.Exists(Path.Combine(currentDir, "Super Battle Golf.exe")))
+            // Epic Games Store locations
+            var epicPaths = new[]
             {
-                return currentDir;
+                @"C:\Program Files\Epic Games\Super Battle Golf",
+                @"D:\Epic Games\Super Battle Golf",
+                @"E:\Epic Games\Super Battle Golf"
+            };
+            
+            foreach (var path in epicPaths)
+            {
+                if (Directory.Exists(path) && File.Exists(Path.Combine(path, "Super Battle Golf.exe")))
+                {
+                    return path;
+                }
             }
             
-            // Default to Program Files
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Super Battle Golf");
+            // Common install locations
+            var commonPaths = new[]
+            {
+                @"C:\Program Files\Super Battle Golf",
+                @"C:\Program Files (x86)\Super Battle Golf",
+                @"D:\Games\Super Battle Golf",
+                @"C:\Games\Super Battle Golf",
+                @"E:\Games\Super Battle Golf",
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Super Battle Golf")
+            };
+            
+            foreach (var path in commonPaths)
+            {
+                if (Directory.Exists(path) && File.Exists(Path.Combine(path, "Super Battle Golf.exe")))
+                {
+                    return path;
+                }
+            }
+            
+            // Search all drives for the game
+            foreach (var drive in DriveInfo.GetDrives())
+            {
+                if (drive.IsReady && drive.DriveType == DriveType.Fixed)
+                {
+                    var searchPaths = new[]
+                    {
+                        Path.Combine(drive.Name, "Games", "Super Battle Golf"),
+                        Path.Combine(drive.Name, "Program Files", "Super Battle Golf"),
+                        Path.Combine(drive.Name, "Program Files (x86)", "Super Battle Golf"),
+                        Path.Combine(drive.Name, "SteamLibrary", "steamapps", "common", "Super Battle Golf"),
+                        Path.Combine(drive.Name, "Epic Games", "Super Battle Golf")
+                    };
+                    
+                    foreach (var path in searchPaths)
+                    {
+                        try
+                        {
+                            if (Directory.Exists(path) && File.Exists(Path.Combine(path, "Super Battle Golf.exe")))
+                            {
+                                return path;
+                            }
+                        }
+                        catch
+                        {
+                            // Skip inaccessible paths
+                        }
+                    }
+                }
+            }
+            
+            // Default to current directory if nothing found
+            return launcherDir;
         }
     }
 }

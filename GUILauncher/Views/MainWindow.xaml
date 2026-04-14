@@ -12,28 +12,38 @@
     </Window.DataContext>
     
     <Window.Resources>
-        <!-- Modern color scheme -->
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#2196F3"/>
-        <SolidColorBrush x:Key="AccentBrush" Color="#FF9800"/>
-        <SolidColorBrush x:Key="SuccessBrush" Color="#4CAF50"/>
-        <SolidColorBrush x:Key="WarningBrush" Color="#FFC107"/>
-        <SolidColorBrush x:Key="DangerBrush" Color="#F44336"/>
-        <SolidColorBrush x:Key="BackgroundBrush" Color="#F5F5F5"/>
-        <SolidColorBrush x:Key="CardBrush" Color="White"/>
+        <!-- Dark golf-themed color scheme -->
+        <SolidColorBrush x:Key="DarkBackgroundBrush" Color="#1A1D23"/>
+        <SolidColorBrush x:Key="DarkPanelBrush" Color="#242830"/>
+        <SolidColorBrush x:Key="DarkCardBrush" Color="#2C313D"/>
+        <SolidColorBrush x:Key="DarkHeaderBrush" Color="#1E2229"/>
         
-        <!-- Button style -->
+        <!-- Golf-themed accent colors -->
+        <SolidColorBrush x:Key="GolfGreenBrush" Color="#4CAF50"/>
+        <SolidColorBrush x:Key="GolfBlueBrush" Color="#2196F3"/>
+        <SolidColorBrush x:Key="GolfOrangeBrush" Color="#FF6B35"/>
+        <SolidColorBrush x:Key="GolfGoldBrush" Color="#FFB627"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="#E63946"/>
+        
+        <!-- Text colors -->
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E8E9ED"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9CA3AF"/>
+        <SolidColorBrush x:Key="TextMutedBrush" Color="#6B7280"/>
+        
+        <!-- Modern button style with hover effects -->
         <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Background" Value="{StaticResource GolfGreenBrush}"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Padding" Value="15,10"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
-                                CornerRadius="4"
+                                CornerRadius="6"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -42,13 +52,65 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="0.9"/>
+                    <Setter Property="Opacity" Value="0.85"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
+        <!-- Dark ListView style -->
+        <Style TargetType="ListView">
+            <Setter Property="Background" Value="{StaticResource DarkCardBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="#3A3F4B"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        
+        <!-- Dark TabControl style -->
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="{StaticResource DarkPanelBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Border" Background="{TemplateBinding Background}" 
+                                BorderThickness="0" CornerRadius="6,6,0,0" Margin="2,0" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource DarkCardBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#343945"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- CheckBox dark style -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+        
+        <!-- TextBlock dark style -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
     </Window.Resources>
     
-    <Grid Background="{StaticResource BackgroundBrush}">
+    <Grid Background="{StaticResource DarkBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -56,7 +118,7 @@
         </Grid.RowDefinitions>
         
         <!-- Header -->
-        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Padding="20,15">
+        <Border Grid.Row="0" Background="{StaticResource DarkHeaderBrush}" Padding="20,15" BorderBrush="{StaticResource GolfGreenBrush}" BorderThickness="0,0,0,3">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -64,15 +126,15 @@
                 </Grid.ColumnDefinitions>
                 
                 <StackPanel>
-                    <TextBlock Text="🏌️ Super Battle Golf" FontSize="24" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Text="Mod Manager &amp; Launcher" FontSize="14" Foreground="#E0E0E0" Margin="0,2,0,0"/>
+                    <TextBlock Text="⛳ SUPER BATTLE GOLF" FontSize="24" FontWeight="Bold" Foreground="{StaticResource GolfGreenBrush}"/>
+                    <TextBlock Text="Mod Launcher v1.0.0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,2,0,0"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Game:" Foreground="White" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding GameVersion}" Foreground="#E0E0E0" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                    <Button Content="Browse..." Command="{Binding BrowseGamePathCommand}" 
-                            Style="{StaticResource PrimaryButton}" Background="#1976D2"/>
+                    <TextBlock Text="Game:" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding GameVersion}" Foreground="{StaticResource GolfGoldBrush}" VerticalAlignment="Center" Margin="0,0,20,0" FontWeight="SemiBold"/>
+                    <Button Content="📁 Browse..." Command="{Binding BrowseGamePathCommand}" 
+                            Style="{StaticResource PrimaryButton}" Background="{StaticResource GolfBlueBrush}" Padding="12,6"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -85,57 +147,59 @@
             </Grid.ColumnDefinitions>
             
             <!-- Sidebar -->
-            <Border Grid.Column="0" Background="{StaticResource CardBrush}" CornerRadius="8" Padding="10" Margin="0,0,10,0">
+            <Border Grid.Column="0" Background="{StaticResource DarkPanelBrush}" CornerRadius="8" Padding="15" Margin="0,0,10,0" BorderBrush="#3A3F4B" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="QUICK ACTIONS" FontWeight="Bold" Margin="5,5,5,15"/>
+                    <TextBlock Text="⚡ QUICK ACTIONS" FontWeight="Bold" Margin="0,0,0,15" Foreground="{StaticResource GolfGoldBrush}" FontSize="13"/>
                     
                     <Button Content="▶️ Launch with Mods" Command="{Binding LaunchWithModsCommand}"
-                            Style="{StaticResource PrimaryButton}" Margin="0,0,0,10" Background="{StaticResource SuccessBrush}"/>
+                            Style="{StaticResource PrimaryButton}" Margin="0,0,0,8" Background="{StaticResource GolfGreenBrush}"/>
                     
                     <Button Content="🎮 Launch Vanilla" Command="{Binding LaunchVanillaCommand}"
-                            Style="{StaticResource PrimaryButton}" Margin="0,0,0,10" Background="#757575"/>
+                            Style="{StaticResource PrimaryButton}" Margin="0,0,0,8" Background="#4B5563"/>
                     
-                    <Separator Margin="0,10"/>
+                    <Separator Margin="0,10" Background="#3A3F4B"/>
                     
-                    <TextBlock Text="MOD MANAGEMENT" FontWeight="Bold" Margin="5,15,5,15"/>
+                    <TextBlock Text="🔧 MOD MANAGEMENT" FontWeight="Bold" Margin="0,10,0,15" Foreground="{StaticResource GolfGoldBrush}" FontSize="13"/>
                     
                     <Button Content="🔄 Refresh Mods" Command="{Binding RefreshModsCommand}"
-                            Style="{StaticResource PrimaryButton}" Margin="0,0,0,5"/>
+                            Style="{StaticResource PrimaryButton}" Margin="0,0,0,6" Background="{StaticResource GolfBlueBrush}"/>
                     
                     <Button Content="✅ Enable All" Command="{Binding EnableAllModsCommand}"
-                            Style="{StaticResource PrimaryButton}" Margin="0,5,0,5"/>
+                            Style="{StaticResource PrimaryButton}" Margin="0,6,0,6" Background="{StaticResource GolfGreenBrush}"/>
                     
                     <Button Content="❌ Disable All" Command="{Binding DisableAllModsCommand}"
-                            Style="{StaticResource PrimaryButton}" Margin="0,5,0,5"/>
+                            Style="{StaticResource PrimaryButton}" Margin="0,6,0,6" Background="{StaticResource DangerBrush}"/>
                     
                     <Button Content="📁 Open Mods Folder" Command="{Binding OpenModsFolderCommand}"
-                            Style="{StaticResource PrimaryButton}" Margin="0,5,0,0"/>
+                            Style="{StaticResource PrimaryButton}" Margin="0,6,0,0" Background="#6366F1"/>
                     
-                    <Separator Margin="0,15,0,10"/>
+                    <Separator Margin="0,15,0,10" Background="#3A3F4B"/>
                     
-                    <TextBlock Text="DISCOVER MORE" FontWeight="Bold" Margin="5,5,5,15"/>
+                    <TextBlock Text="🌐 DISCOVER MORE" FontWeight="Bold" Margin="0,5,0,15" Foreground="{StaticResource GolfGoldBrush}" FontSize="13"/>
                     
                     <Button Content="🌐 Browse Mods" Command="{Binding OpenModBrowserCommand}"
-                            Style="{StaticResource PrimaryButton}" Background="{StaticResource AccentBrush}" Margin="0,0,0,0"/>
+                            Style="{StaticResource PrimaryButton}" Background="{StaticResource GolfOrangeBrush}" Margin="0,0,0,0"/>
                     
-                    <Separator Margin="0,15,0,10"/>
+                    <Separator Margin="0,15,0,10" Background="#3A3F4B"/>
                     
-                    <StackPanel Margin="5">
-                        <TextBlock Text="📊 Statistics" FontWeight="Bold" Margin="0,0,0,10"/>
-                        <TextBlock>
-                            <Run Text="Total Mods: "/>
-                            <Run Text="{Binding TotalModsCount}" FontWeight="Bold"/>
-                        </TextBlock>
-                        <TextBlock Margin="0,5,0,0">
-                            <Run Text="Enabled: "/>
-                            <Run Text="{Binding EnabledModsCount}" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}"/>
-                        </TextBlock>
-                    </StackPanel>
+                    <Border Background="{StaticResource DarkCardBrush}" CornerRadius="6" Padding="12" BorderBrush="#4CAF50" BorderThickness="2">
+                        <StackPanel>
+                            <TextBlock Text="📊 STATISTICS" FontWeight="Bold" Margin="0,0,0,10" Foreground="{StaticResource GolfGreenBrush}"/>
+                            <TextBlock Foreground="{StaticResource TextSecondaryBrush}">
+                                <Run Text="Total Mods: "/>
+                                <Run Text="{Binding TotalModsCount}" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </TextBlock>
+                            <TextBlock Margin="0,5,0,0" Foreground="{StaticResource TextSecondaryBrush}">
+                                <Run Text="Enabled: "/>
+                                <Run Text="{Binding EnabledModsCount}" FontWeight="Bold" Foreground="{StaticResource GolfGreenBrush}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Border>
             
             <!-- Mod List -->
-            <Border Grid.Column="1" Background="{StaticResource CardBrush}" CornerRadius="8" Padding="15">
+            <Border Grid.Column="1" Background="{StaticResource DarkPanelBrush}" CornerRadius="8" Padding="15" BorderBrush="#3A3F4B" BorderThickness="1">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -144,7 +208,7 @@
                     </Grid.RowDefinitions>
                     
                     <!-- Tabs -->
-                    <TabControl Grid.Row="1" BorderThickness="0">
+                    <TabControl Grid.Row="1" BorderThickness="0" Background="Transparent">
                         <!-- All Mods Tab -->
                         <TabItem Header="All Mods">
                             <ListView ItemsSource="{Binding AllMods}" SelectedItem="{Binding SelectedMod}">
@@ -277,7 +341,7 @@
         </Grid>
         
         <!-- Status Bar -->
-        <Border Grid.Row="2" Background="#263238" Padding="15,10">
+        <Border Grid.Row="2" Background="{StaticResource DarkHeaderBrush}" Padding="15,10" BorderBrush="{StaticResource GolfGreenBrush}" BorderThickness="0,2,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -285,9 +349,9 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 
-                <TextBlock Text="📊" FontSize="14" VerticalAlignment="Center" Foreground="White" Margin="0,0,10,0"/>
-                <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" Foreground="White" VerticalAlignment="Center"/>
-                <TextBlock Grid.Column="2" Text="v1.0.0" Foreground="#B0BEC5" VerticalAlignment="Center"/>
+                <TextBlock Text="⚡" FontSize="14" VerticalAlignment="Center" Foreground="{StaticResource GolfGreenBrush}" Margin="0,0,10,0"/>
+                <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="v1.0.0-beta" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" FontSize="11"/>
             </Grid>
         </Border>
     </Grid>
