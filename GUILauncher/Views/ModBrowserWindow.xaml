@@ -1,0 +1,195 @@
+<Window x:Class="SBGModLauncher.Views.ModBrowserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mod Browser - Discover &amp; Install Mods" 
+        Height="650" Width="950"
+        MinHeight="500" MinWidth="700"
+        WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#2196F3"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#FF9800"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#4CAF50"/>
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="CardBrush" Color="White"/>
+        
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.9"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Background="{StaticResource BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Padding="20,15">
+            <StackPanel>
+                <TextBlock Text="🌐 Mod Browser" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Discover, download, and install community mods" FontSize="14" Foreground="#E0E0E0" Margin="0,2,0,0"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Search and Filters -->
+        <Border Grid.Row="1" Background="White" Padding="15" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Search Box -->
+                <TextBox Grid.Row="0" Grid.Column="0" 
+                         Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                         Padding="10" FontSize="14" Margin="0,0,10,0"
+                         BorderBrush="#BDBDBD" BorderThickness="1">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding SearchModsCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                
+                <Button Grid.Row="0" Grid.Column="1" Content="🔍 Search" 
+                        Command="{Binding SearchModsCommand}"
+                        Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
+                
+                <Button Grid.Row="0" Grid.Column="2" Content="⭐ Featured" 
+                        Command="{Binding ShowFeaturedModsCommand}"
+                        Style="{StaticResource PrimaryButton}" Background="#FF9800" Margin="0,0,10,0"/>
+                
+                <Button Grid.Row="0" Grid.Column="3" Content="🔄 Refresh" 
+                        Command="{Binding RefreshModsCommand}"
+                        Style="{StaticResource PrimaryButton}"/>
+                
+                <!-- Filters -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBlock Text="Type:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="SemiBold"/>
+                    <ComboBox ItemsSource="{Binding TypeFilters}" 
+                              SelectedItem="{Binding SelectedTypeFilter}"
+                              Width="150" Padding="5"/>
+                    
+                    <CheckBox Content="Featured Only" IsChecked="{Binding ShowFeaturedOnly}"
+                              Margin="20,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!-- Mod List -->
+        <ListView Grid.Row="2" ItemsSource="{Binding FilteredMods}" SelectedItem="{Binding SelectedMod}"
+                  Margin="15" BorderThickness="0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding TypeDisplay}" Width="100"/>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="200"/>
+                    <GridViewColumn Header="Author" DisplayMemberBinding="{Binding Author}" Width="120"/>
+                    <GridViewColumn Header="Version" DisplayMemberBinding="{Binding Version}" Width="70"/>
+                    <GridViewColumn Header="Rating" DisplayMemberBinding="{Binding RatingDisplay}" Width="100"/>
+                    <GridViewColumn Header="Downloads" DisplayMemberBinding="{Binding DownloadsDisplay}" Width="80"/>
+                    <GridViewColumn Header="Size" DisplayMemberBinding="{Binding FileSizeDisplay}" Width="80"/>
+                    <GridViewColumn Header="" Width="120">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="📥 Install" 
+                                        Command="{Binding DataContext.DownloadModCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                        CommandParameter="{Binding}"
+                                        Padding="8,4" FontSize="11" Background="#4CAF50" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <!-- Mod Details Panel -->
+        <Border Grid.Row="3" Background="White" Padding="15" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Margin="15,0">
+            <StackPanel DataContext="{Binding SelectedMod}">
+                <TextBlock Text="Mod Details" FontWeight="Bold" FontSize="14" Margin="0,0,0,10"/>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel>
+                        <TextBlock FontWeight="SemiBold" FontSize="16">
+                            <Run Text="{Binding Name}"/>
+                            <Run Text=" v" FontSize="12" Foreground="Gray"/>
+                            <Run Text="{Binding Version}" FontSize="12" Foreground="Gray"/>
+                        </TextBlock>
+                        
+                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,5,0,5"/>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock Text="By " Foreground="Gray"/>
+                            <TextBlock Text="{Binding Author}" FontWeight="SemiBold"/>
+                            <TextBlock Text=" • " Margin="5,0" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TypeDisplay}"/>
+                            <TextBlock Text=" • " Margin="5,0" Foreground="Gray"/>
+                            <TextBlock Text="{Binding FileSizeDisplay}"/>
+                            <TextBlock Text=" • " Margin="5,0" Foreground="Gray"/>
+                            <TextBlock Text="{Binding DownloadsDisplay}"/>
+                            <TextBlock Text=" downloads" Foreground="Gray"/>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <Button Grid.Column="1" Content="📥 Install Mod" 
+                            Command="{Binding DataContext.DownloadModCommand, RelativeSource={RelativeSource AncestorType=Border}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource PrimaryButton}" Background="{StaticResource SuccessBrush}"
+                            Padding="20,10" FontSize="14"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+        
+        <!-- Status Bar -->
+        <Border Grid.Row="4" Background="#263238" Padding="15,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Text="📊" FontSize="14" VerticalAlignment="Center" Foreground="White" Margin="0,0,10,0"/>
+                <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" Foreground="White" VerticalAlignment="Center"/>
+                
+                <ProgressBar Grid.Column="2" Value="{Binding DownloadProgress}" 
+                             Width="150" Height="16" Margin="10,0,0,0"
+                             Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

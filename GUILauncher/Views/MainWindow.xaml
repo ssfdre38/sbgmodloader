@@ -113,6 +113,13 @@
                     
                     <Separator Margin="0,15,0,10"/>
                     
+                    <TextBlock Text="DISCOVER MORE" FontWeight="Bold" Margin="5,5,5,15"/>
+                    
+                    <Button Content="🌐 Browse Mods" Command="{Binding OpenModBrowserCommand}"
+                            Style="{StaticResource PrimaryButton}" Background="{StaticResource AccentBrush}" Margin="0,0,0,0"/>
+                    
+                    <Separator Margin="0,15,0,10"/>
+                    
                     <StackPanel Margin="5">
                         <TextBlock Text="📊 Statistics" FontWeight="Bold" Margin="0,0,0,10"/>
                         <TextBlock>

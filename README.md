@@ -77,11 +77,9 @@ Log file: `%APPDATA%\sbg-mod-loader\mod-loader.log`
 
 ## 📊 Status
 
-**24/26 features complete (92.3%)!**
+**26/26 features complete (100%)! 🎉**
 
-✅ Core injection, Mono integration, maps, game modes, characters, items, UI injection, network sync, SDK, map maker
-
-⏳ GUI launcher, mod distribution
+✅ Core injection, Mono integration, maps, game modes, characters, items, UI injection, network sync, SDK, map maker, **GUI launcher, mod distribution**
 
 ## 📂 Repository Branches
 

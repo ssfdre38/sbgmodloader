@@ -245,6 +245,17 @@ namespace SBGModLauncher.ViewModels
             }
         }
         
+        [RelayCommand]
+        private void OpenModBrowser()
+        {
+            var browserWindow = new Views.ModBrowserWindow(GamePath);
+            browserWindow.Owner = Application.Current.MainWindow;
+            browserWindow.ShowDialog();
+            
+            // Refresh mods after browser closes (user may have installed new mods)
+            RefreshMods();
+        }
+        
         private void CheckGameInstallation()
         {
             GameInstalled = _gameLauncher.IsGameInstalled();
